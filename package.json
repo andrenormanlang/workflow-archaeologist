@@ -1,0 +1,14 @@
+{
+    "name": "workflow-archaeologist",
+    "private": true,
+    "version": "0.1.0",
+    "packageManager": "pnpm@8",
+    "workspaces": [
+        "packages/*"
+    ],
+    "scripts": {
+        "bootstrap": "pnpm install",
+        "build": "pnpm -w -r build",
+        "cli": "pnpm --filter @workflow-archaeologist/cli run start"
+    }
+}

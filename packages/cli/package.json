@@ -1,0 +1,19 @@
+{
+    "name": "@workflow-archaeologist/cli",
+    "version": "0.1.0",
+    "bin": {
+        "workflow-archaeologist": "dist/index.js"
+    },
+    "scripts": {
+        "build": "tsc -b",
+        "start": "node dist/index.js"
+    },
+    "dependencies": {
+        "commander": "^10.0.0"
+    },
+    "devDependencies": {
+        "typescript": "^5.4.0",
+        "@types/node": "^20.0.0",
+        "@types/commander": "^2.12.2"
+    }
+}
