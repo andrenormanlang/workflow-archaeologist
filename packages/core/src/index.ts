@@ -1,23 +1,20 @@
-export type WorkflowCommit = {
-  sha: string;
-  message: string;
-  author: string;
-  date: string;
-  filePath: string;
-  diff: string;
-};
+export * from './types/index.js';
+export * from './extractor/gitExtractor.js';
+export * from './ai/analyzer.js';
+export * from './detector/riskDetector.js';
+export * from './cache/db.js';
 
-export class AnalysisError extends Error {}
+export class AnalysisError extends Error {
+  public code: 'REPO_NOT_FOUND' | 'GIT_ERROR' | 'AI_EMPTY_RESPONSE';
+  public cause?: unknown;
 
-export async function extractWorkflowCommits(
-  repoPath: string,
-): Promise<WorkflowCommit[]> {
-  // stub: implement git traversal using simple-git or nodegit
-  if (!repoPath) throw new AnalysisError("REPO_NOT_FOUND");
-  return [];
-}
-
-export async function analyzeCommits(commits: WorkflowCommit[]) {
-  // stub: implement analyzer orchestration (AI + heuristics)
-  return [];
+  constructor(
+    code: 'REPO_NOT_FOUND' | 'GIT_ERROR' | 'AI_EMPTY_RESPONSE',
+    options?: { cause?: unknown }
+  ) {
+    super(code);
+    this.code = code;
+    this.cause = options?.cause;
+    this.name = 'AnalysisError';
+  }
 }

@@ -4,10 +4,20 @@
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "scripts": {
-        "build": "tsc -b"
+        "build": "tsc -b",
+        "test": "vitest run"
+    },
+    "dependencies": {
+        "@anthropic-ai/sdk": "^0.20.0",
+        "js-yaml": "^4.1.0",
+        "simple-git": "^3.22.0",
+        "sql.js": "^1.14.1"
     },
     "devDependencies": {
+        "@types/js-yaml": "^4.0.9",
+        "@types/node": "^20.0.0",
+        "@types/sql.js": "^1.4.11",
         "typescript": "^5.4.0",
-        "@types/node": "^20.0.0"
+        "vitest": "^1.4.0"
     }
 }
