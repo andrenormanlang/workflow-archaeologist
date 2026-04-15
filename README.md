@@ -1,21 +1,127 @@
 # Workflow Archaeologist
 
-Workflow Archaeologist is a tool that analyzes a repository's Git history and reverse-engineers the reasons behind CI/workflow configuration choices. Example output: "This 45-minute timeout was added after a flaky Selenium test in March 2026, commit abc123. It is likely safe to reduce it now."
+Workflow Archaeologist analyses a repository's Git history and reverse-engineers
+the reasons behind CI/workflow configuration choices.
 
-The product is intended for teams that inherit pipelines without institutional memory of past decisions; it reduces time spent investigating CI issues and supports informed configuration changes.
+> "This 45-minute timeout was added after a flaky Selenium test in March 2026,
+> commit abc123. It is likely safe to reduce it now."
 
-Workflow ArchaeoRun the CLI against a local repo
+Built for teams that inherit pipelines without institutional memory of past
+decisions — it reduces time spent investigating CI issues and supports informed
+configuration changes.
+
+---
+
+## Monorepo structure
+
+```bash
+
+workflow-archaeologist/
+├── packages/
+│   ├── core/        — engine: git extraction, AI analysis, risk detection
+│   └── cli/         — CLI consumer of the core engine
+├── docs/
+│   └── specs/       — spec-driven module contracts
+├── turbo.json
+└── pnpm-workspace.yaml
+
+```
+
+## Getting started
+
+**Prerequisites:** Node.js 18+, pnpm 8+
+
+```bash
+pnpm install
+pnpm build
+```
+
+Run the CLI against a local repo:
 
 ```bash
 pnpm --filter @workflow-archaeologist/cli run start -- ./path/to/repo
 ```
 
-That will currently call the core stubs and print a JSON result. Implementations for `extractWorkflowCommits` and `analyzeCommits` live in `packages/core/src`.
+---
 
-Development steps
+## Development
 
-1. Implement `extractWorkflowCommits` using `simple-git` and add unit/integration tests (Vitest).
-2. Implement the enrichment layer to fetch PR and issue text via GitHub API (Octokit).
-3. Implement `analyzeCommits` orchestration: apply cheap heuristics, generate prompts, call the LLM, parse outputs robustly, and map to the `Decision` model.
-4. Add a report renderer (Markdown → PDF via Puppeteer) and a stable `report` JSON schema.
-5. Add caching (better-sqlite3 or Postgres + Redis) and worker queue for long-running analyses.
+This project follows a **spec-driven** workflow — every module has a written
+spec in `docs/specs/` before any implementation is written. Tests are written
+against the spec, then the implementation is written to pass the tests.
+
+```bash
+spec → review → tests → implement → review → merge
+```
+
+### Running tests
+
+```bash
+# all packages
+pnpm test
+
+# core engine only
+pnpm --filter @workflow-archaeologist/core run test
+```
+
+### Building
+
+```bash
+pnpm build
+```
+
+---
+
+## Implementation status
+
+| Module | Spec | Tests | Implementation |
+| --- | --- | --- | --- |
+| `gitExtractor` | ✅ | ✅ 10/10 | ✅ |
+| `riskDetector` | ✅ | ✅ 15/15 | ✅ |
+| `githubEnricher` | ⬜ | ⬜ | ⬜ |
+| `analyzer` | ✅ draft | ⬜ | ⬜ |
+| `cache/db` | ⬜ | ⬜ | ⬜ |
+| `cli reporter` | ⬜ | ⬜ | ⬜ |
+
+---
+
+## Roadmap
+
+1. **`githubEnricher`** — fetch PR descriptions and linked issue text via
+   Octokit to enrich raw git commits with the human context behind each change.
+2. **`analyzer`** — AI orchestration layer: build prompts from enriched commits,
+   call the Claude API, parse structured `Decision` objects from responses.
+3. **`cache/db`** — SQLite-backed cache keyed by `sha:filePath` to avoid
+   re-analysing commits across runs.
+4. **Report renderer** — Markdown and PDF output via Puppeteer, structured
+   around: executive summary → decision registry → risk flags → quick wins.
+5. **GitHub App** — post analysis comments automatically on PRs that touch
+   `.github/workflows/`.
+
+---
+
+## Specs
+
+Module contracts live in `docs/specs/`. Each spec defines inputs, outputs,
+behavioral rules, error cases, and acceptance criteria before any code is
+written.
+
+- [`gitExtractor.spec.md`](docs/specs/gitExtractor.spec.md)
+- [`riskDetector.spec.md`](docs/specs/riskDetector.spec.md)
+- [`analyzer.spec.md`](docs/specs/analyzer.spec.md)
+
+---
+
+## Tech stack
+
+| Concern | Library |
+| --- | --- |
+| Git traversal | `simple-git` |
+| GitHub API | `@octokit/rest` |
+| AI reasoning | `@anthropic-ai/sdk` |
+| YAML parsing | `js-yaml` |
+| Local cache | `sql.js` |
+| PDF export | `puppeteer` |
+| CLI framework | `commander` |
+| Tests | `vitest` |
+| Build | `turbo` + `tsc` |
