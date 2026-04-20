@@ -29,3 +29,5 @@ export type Report = {
   risks: RiskFlag[];
   quickWins: string[];
 };
+
+export type { EnrichedCommit, PullRequestContext, LinkedIssue } from '../extractor/githubEnricher.js';
