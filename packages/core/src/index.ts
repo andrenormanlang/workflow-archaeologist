@@ -1,7 +1,7 @@
 export * from "./types/index.js";
 export * from "./extractor/gitExtractor.js";
 export * from "./ai/analyzer.js";
-export * from "./detector/riskDetector.test..js";
+export * from "./detector/riskDetector.test.js";
 export * from "./cache/db.js";
 
 export class AnalysisError extends Error {
