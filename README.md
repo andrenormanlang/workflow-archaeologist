@@ -15,7 +15,6 @@ configuration changes.
 ## Monorepo structure
 
 ```bash
-
 workflow-archaeologist/
 ├── packages/
 │   ├── core/        — engine: git extraction, AI analysis, risk detection
@@ -24,7 +23,6 @@ workflow-archaeologist/
 │   └── specs/       — spec-driven module contracts
 ├── turbo.json
 └── pnpm-workspace.yaml
-
 ```
 
 ## Getting started
@@ -78,17 +76,18 @@ pnpm build
 | --- | --- | --- | --- |
 | `gitExtractor` | ✅ | ✅ 10/10 | ✅ |
 | `riskDetector` | ✅ | ✅ 15/15 | ✅ |
-| `githubEnricher` | ⬜ | ⬜ | ⬜ |
+| `githubEnricher` | ✅ | ✅ 11/11 | ✅ |
 | `analyzer` | ✅ draft | ⬜ | ⬜ |
 | `cache/db` | ⬜ | ⬜ | ⬜ |
 | `cli reporter` | ⬜ | ⬜ | ⬜ |
+
+**66 tests passing across 3 modules.**
 
 ---
 
 ## Roadmap
 
-1. **`githubEnricher`** — fetch PR descriptions and linked issue text via
-   Octokit to enrich raw git commits with the human context behind each change.
+1. ~~**`githubEnricher`**~~ — ✅ done
 2. **`analyzer`** — AI orchestration layer: build prompts from enriched commits,
    call the Claude API, parse structured `Decision` objects from responses.
 3. **`cache/db`** — SQLite-backed cache keyed by `sha:filePath` to avoid
@@ -106,9 +105,10 @@ Module contracts live in `docs/specs/`. Each spec defines inputs, outputs,
 behavioral rules, error cases, and acceptance criteria before any code is
 written.
 
-- [`gitExtractor.spec.md`](docs/specs/gitExtractor.spec.md)
-- [`riskDetector.spec.md`](docs/specs/riskDetector.spec.md)
-- [`analyzer.spec.md`](docs/specs/analyzer.spec.md)
+- [gitExtractor.spec.md](docs/specs/gitExtractor.spec.md)
+- [riskDetector.spec.md](docs/specs/riskDetector.spec.md)
+- [githubEnricher.spec.md](docs/specs/githubEnricher.spec.md)
+- [analyzer.spec.md](docs/specs/analyzer.spec.md)
 
 ---
 
