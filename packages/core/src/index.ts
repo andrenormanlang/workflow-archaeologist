@@ -5,16 +5,28 @@ export * from "./detector/riskDetector.test.js";
 export * from "./cache/db.js";
 
 export class AnalysisError extends Error {
-  public code: "REPO_NOT_FOUND" | "GIT_ERROR" | "AI_EMPTY_RESPONSE";
+  public code:
+    | 'REPO_NOT_FOUND'
+    | 'GIT_ERROR'
+    | 'AI_EMPTY_RESPONSE'
+    | 'GITHUB_AUTH_ERROR'
+    | 'GITHUB_RATE_LIMITED'
+    | 'GITHUB_API_ERROR';
   public cause?: unknown;
 
   constructor(
-    code: "REPO_NOT_FOUND" | "GIT_ERROR" | "AI_EMPTY_RESPONSE",
-    options?: { cause?: unknown },
+    code:
+      | 'REPO_NOT_FOUND'
+      | 'GIT_ERROR'
+      | 'AI_EMPTY_RESPONSE'
+      | 'GITHUB_AUTH_ERROR'
+      | 'GITHUB_RATE_LIMITED'
+      | 'GITHUB_API_ERROR',
+    options?: { cause?: unknown }
   ) {
     super(code);
     this.code = code;
     this.cause = options?.cause;
-    this.name = "AnalysisError";
+    this.name = 'AnalysisError';
   }
 }
