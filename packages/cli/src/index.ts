@@ -88,11 +88,17 @@ program
         });
 
         console.log(`🤖 Analysing ${toAnalyze.length} commits with AI...`);
+
+        const apiKey = opts.anthropicKey ?? process.env.ANTHROPIC_API_KEY;
+        if (!apiKey) {
+          throw new Error(
+            "No Anthropic API key found. Pass --anthropic-key or set ANTHROPIC_API_KEY env var.",
+          );
+        }
+
         const newDecisions =
           toAnalyze.length > 0
-            ? await analyzeCommits(toAnalyze, {
-                apiKey: opts.anthropicKey ?? process.env.ANTHROPIC_API_KEY,
-              })
+            ? await analyzeCommits(toAnalyze, { apiKey })
             : [];
 
         // merge cached + new decisions
