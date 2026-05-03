@@ -9,6 +9,8 @@ export class AnalysisError extends Error {
     | 'REPO_NOT_FOUND'
     | 'GIT_ERROR'
     | 'AI_EMPTY_RESPONSE'
+    | 'AI_AUTH_ERROR'
+    | 'AI_API_ERROR'
     | 'GITHUB_AUTH_ERROR'
     | 'GITHUB_RATE_LIMITED'
     | 'GITHUB_API_ERROR';
@@ -19,6 +21,8 @@ export class AnalysisError extends Error {
       | 'REPO_NOT_FOUND'
       | 'GIT_ERROR'
       | 'AI_EMPTY_RESPONSE'
+      | 'AI_AUTH_ERROR'
+      | 'AI_API_ERROR'
       | 'GITHUB_AUTH_ERROR'
       | 'GITHUB_RATE_LIMITED'
       | 'GITHUB_API_ERROR',

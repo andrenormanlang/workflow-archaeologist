@@ -9,10 +9,12 @@ export type WorkflowCommit = {
 };
 
 export type Decision = {
+  commitSha: string;
+  filePath: string;
   reason: string;
   confidence: 'high' | 'medium' | 'low';
   recommendation: string | null;
-  commitSha: string;
+  isPlaceholder: boolean;
 };
 
 export type RiskFlag = {

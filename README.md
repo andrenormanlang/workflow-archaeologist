@@ -77,19 +77,18 @@ pnpm build
 | `gitExtractor` | ✅ | ✅ 10/10 | ✅ |
 | `riskDetector` | ✅ | ✅ 15/15 | ✅ |
 | `githubEnricher` | ✅ | ✅ 11/11 | ✅ |
-| `analyzer` | ✅ draft | ⬜ | ⬜ |
+| `analyzer` | ✅ | ✅ 14/14 | ✅ |
 | `cache/db` | ⬜ | ⬜ | ⬜ |
 | `cli reporter` | ⬜ | ⬜ | ⬜ |
 
-**66 tests passing across 3 modules.**
+**95 tests passing across 4 modules.**
 
 ---
 
 ## Roadmap
 
 1. ~~**`githubEnricher`**~~ — ✅ done
-2. **`analyzer`** — AI orchestration layer: build prompts from enriched commits,
-   call the Claude API, parse structured `Decision` objects from responses.
+2. ~~**`analyzer`**~~ — ✅ done
 3. **`cache/db`** — SQLite-backed cache keyed by `sha:filePath` to avoid
    re-analysing commits across runs.
 4. **Report renderer** — Markdown and PDF output via Puppeteer, structured
