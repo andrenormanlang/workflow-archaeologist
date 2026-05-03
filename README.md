@@ -78,10 +78,10 @@ pnpm build
 | `riskDetector` | ✅ | ✅ 15/15 | ✅ |
 | `githubEnricher` | ✅ | ✅ 11/11 | ✅ |
 | `analyzer` | ✅ | ✅ 14/14 | ✅ |
-| `cache/db` | ⬜ | ⬜ | ⬜ |
+| `cache/db` | ✅ | ✅ 10/10 | ✅ |
 | `cli reporter` | ⬜ | ⬜ | ⬜ |
 
-**95 tests passing across 4 modules.**
+**105 tests passing across 5 modules.**
 
 ---
 
