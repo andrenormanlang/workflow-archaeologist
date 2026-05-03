@@ -3,14 +3,16 @@
 Module: `riskDetector`
 
 ## Purpose
-Statically analyse a GitHub Actions workflow YAML string and return a list
-of risk flags without making any network or filesystem calls.
+
+Statically analyse a GitHub Actions workflow YAML string and return a list of risk flags without making any network or filesystem calls.
 
 ## Inputs
+
 - `workflowYaml: string` — raw YAML content of a single workflow file
 - `filePath: string` — relative path of the file (used in flag metadata)
 
 ## Outputs
+
 `RiskFlag[]` — may be empty if no issues are found. Each `RiskFlag`:
 
 ```tstype RiskFlag = {
@@ -25,10 +27,8 @@ line?: number;
 
 ### UNPINNED_ACTION
 
-- Flag any `uses:` value where the version ref is `main`, `master`,
-  `latest`, or is absent entirely.
-- Pinned means: a full 40-char SHA (`@abcdef1234...`) or a semver tag
-  (`@v3`, `@v3.1.2`). These are safe and must NOT be flagged.
+- Flag any `uses:` value where the version ref is `main`, `master`, `latest`, or is absent entirely.
+- Pinned means: a full 40-char SHA (`@abcdef1234...`) or a semver tag (`@v3`, `@v3.1.2`). These are safe and must NOT be flagged.
 - One flag per unpinned `uses:` occurrence.
 
 ### HARDCODED_SECRET
@@ -37,8 +37,7 @@ line?: number;
   `${{ vars.* }}`) that matches known token patterns:
   - GitHub PAT: `ghp_[A-Za-z0-9]{36}`
   - AWS key ID: `AKIA[A-Z0-9]{16}`
-  - Generic high-entropy string: 40+ char hex or base64 NOT used as a
-    pinned action SHA (i.e. not in a `uses:` field)
+  - Generic high-entropy string: 40+ char hex or base64 NOT used as a pinned action SHA (i.e. not in a `uses:` field)
 - Do NOT flag `${{ secrets.MY_SECRET }}` — that is the correct pattern.
 
 ### MISSING_CACHE
@@ -93,4 +92,3 @@ line?: number;
 13. `timeout-minutes: 30` → NOT flagged.
 14. Multiple risk types in one file → all are returned.
 15. Workflow with no jobs key → returns `[]` without throwing.
-    

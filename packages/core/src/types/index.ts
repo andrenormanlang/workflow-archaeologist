@@ -18,18 +18,26 @@ export type Decision = {
 };
 
 export type RiskFlag = {
-  type: string;
+  type: 'UNPINNED_ACTION' | 'HARDCODED_SECRET' | 'MISSING_CACHE' | 'SUSPICIOUS_TIMEOUT' | 'INVALID_YAML';
   filePath: string;
   description: string;
   line?: number;
 };
 
+export type QuickWin = {
+  type: 'decision' | 'risk';
+  description: string;
+  filePath: string;
+  commitSha?: string;
+};
+
 export type Report = {
   repoPath: string;
   generatedAt: string;
+  totalCommitsAnalysed: number;
   decisions: Decision[];
   risks: RiskFlag[];
-  quickWins: string[];
+  quickWins: QuickWin[];
 };
 
 export type { EnrichedCommit, PullRequestContext, LinkedIssue } from '../extractor/githubEnricher.js';

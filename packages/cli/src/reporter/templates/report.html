@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 14px; color: #1a1a1a; padding: 40px; line-height: 1.6; }
+    h1 { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+    h2 { font-size: 16px; font-weight: 600; margin: 32px 0 12px; padding-bottom: 6px; border-bottom: 1px solid #e0e0e0; }
+    .meta { font-size: 12px; color: #666; margin-bottom: 32px; }
+    .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 32px; }
+    .stat { background: #f5f5f5; border-radius: 8px; padding: 14px 16px; }
+    .stat-value { font-size: 28px; font-weight: 700; }
+    .stat-label { font-size: 11px; color: #666; margin-top: 2px; }
+    .decision { border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px; margin-bottom: 12px; }
+    .decision-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .sha { font-family: monospace; font-size: 12px; background: #f0f0f0; padding: 2px 6px; border-radius: 4px; }
+    .badge { font-size: 11px; padding: 2px 8px; border-radius: 20px; font-weight: 500; }
+    .high { background: #d4edda; color: #155724; }
+    .medium { background: #fff3cd; color: #856404; }
+    .low { background: #f8d7da; color: #721c24; }
+    .placeholder { background: #e2e3e5; color: #383d41; }
+    .filepath { font-family: monospace; font-size: 11px; color: #666; }
+    .reason { margin: 8px 0; color: #333; }
+    .recommendation { font-size: 12px; color: #0066cc; margin-top: 6px; }
+    .recommendation::before { content: '→ '; }
+    .risk { display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px; border-radius: 6px; margin-bottom: 8px; background: #fff8e1; border-left: 3px solid #f59e0b; }
+    .risk.HARDCODED_SECRET, .risk.UNPINNED_ACTION { background: #fef2f2; border-left-color: #ef4444; }
+    .risk.MISSING_CACHE { background: #eff6ff; border-left-color: #3b82f6; }
+    .risk.INVALID_YAML { background: #fdf4ff; border-left-color: #a855f7; }
+    .risk-type { font-size: 11px; font-weight: 600; white-space: nowrap; }
+    .risk-desc { font-size: 13px; color: #444; }
+    .risk-path { font-family: monospace; font-size: 11px; color: #888; margin-top: 2px; }
+    .quickwin { display: flex; gap: 10px; padding: 10px 14px; background: #f0fdf4; border-left: 3px solid #22c55e; border-radius: 6px; margin-bottom: 8px; }
+    .quickwin-type { font-size: 11px; font-weight: 600; color: #166534; white-space: nowrap; }
+    .quickwin-desc { font-size: 13px; color: #333; }
+    .quickwin-path { font-family: monospace; font-size: 11px; color: #888; margin-top: 2px; }
+    .empty { color: #999; font-size: 13px; font-style: italic; }
+    footer { margin-top: 40px; font-size: 11px; color: #999; text-align: center; border-top: 1px solid #eee; padding-top: 16px; }
+  </style>
+</head>
+<body>
+
+  <h1>Workflow Archaeologist Report</h1>
+  <p class="meta">Repository: <strong>{{ repoPath }}</strong> &nbsp;·&nbsp; Generated: {{ generatedAt }}</p>
+
+  <div class="summary-grid">
+    <div class="stat">
+      <div class="stat-value">{{ totalCommitsAnalysed }}</div>
+      <div class="stat-label">Commits analysed</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">{{ decisions.length }}</div>
+      <div class="stat-label">Decisions explained</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">{{ risks.length }}</div>
+      <div class="stat-label">Risk flags</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">{{ quickWins.length }}</div>
+      <div class="stat-label">Quick wins</div>
+    </div>
+  </div>
+
+  {% if quickWins.length > 0 %}
+  <h2>⚡ Quick Wins</h2>
+  {% for win in quickWins %}
+  <div class="quickwin">
+    <div class="quickwin-type">{{ win.type | upper }}</div>
+    <div>
+      <div class="quickwin-desc">{{ win.description }}</div>
+      <div class="quickwin-path">{{ win.filePath }}{% if win.commitSha %} · {{ win.commitSha[:8] }}{% endif %}</div>
+    </div>
+  </div>
+  {% endfor %}
+  {% endif %}
+
+  <h2>🔍 Decision Registry</h2>
+  {% if decisions.length === 0 %}
+    <p class="empty">No decisions analysed.</p>
+  {% else %}
+    {% for d in decisions %}
+    <div class="decision">
+      <div class="decision-header">
+        <span class="sha">{{ d.commitSha[:8] }}</span>
+        {% if d.isPlaceholder %}
+          <span class="badge placeholder">placeholder</span>
+        {% else %}
+          <span class="badge {{ d.confidence }}">{{ d.confidence }}</span>
+        {% endif %}
+        <span class="filepath">{{ d.filePath }}</span>
+      </div>
+      <div class="reason">{{ d.reason }}</div>
+      {% if d.recommendation %}
+        <div class="recommendation">{{ d.recommendation }}</div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  {% endif %}
+
+  <h2>⚠️ Risk Flags</h2>
+  {% if risks.length === 0 %}
+    <p class="empty">No risks detected.</p>
+  {% else %}
+    {% for r in risks %}
+    <div class="risk {{ r.type }}">
+      <div class="risk-type">{{ r.type }}</div>
+      <div>
+        <div class="risk-desc">{{ r.description }}</div>
+        <div class="risk-path">{{ r.filePath }}{% if r.line %} · line {{ r.line }}{% endif %}</div>
+      </div>
+    </div>
+    {% endfor %}
+  {% endif %}
+
+  <footer>Generated by Workflow Archaeologist · {{ generatedAt }}</footer>
+</body>
+</html>
